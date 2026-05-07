@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zêlu Academy — Definição do Problema de Pesquisa</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #181818;
+  --border: #242424;
+  --border-soft: #1c1c1c;
+  --text: #e8e2d9;
+  --text-dim: #5a5550;
+  --text-mid: #9a948e;
+  --accent: #c8a96e;
+  --accent-dim: rgba(200,169,110,0.12);
+  --accent-glow: rgba(200,169,110,0.06);
+  --red: #c0392b;
+  --green: #4a7c59;
+  --green-dim: rgba(74,124,89,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* ── NOISE OVERLAY ─────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* ── TOPO ──────────────────────────────── */
+.topo {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 52px;
+}
+
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.logo span { opacity: 0.4; font-style: italic; }
+
+.prog-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.prog-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+
+.dot.ativo { background: var(--accent); border-color: var(--accent); }
+.dot.feito { background: transparent; border-color: var(--accent); }
+
+/* ── LAYOUT ────────────────────────────── */
+.pagina {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 100px 32px 120px;
+}
+
+/* ── INTRO ─────────────────────────────── */
+.intro {
+  margin-bottom: 72px;
+  animation: surgir 0.8s ease both;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(200,169,110,0.3);
+  padding: 3px 10px;
+  border-radius: 1px;
+  margin-bottom: 20px;
+}
+
+.intro h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.intro h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.intro p {
+  color: var(--text-mid);
+  font-size: 12px;
+  line-height: 1.8;
+  max-width: 480px;
+}
+
+/* ── SEÇÕES ────────────────────────────── */
+.secao {
+  margin-bottom: 64px;
+  animation: surgir 0.6s ease both;
+}
+
+.secao-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.secao-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  flex-shrink: 0;
+}
+
+.secao-titulo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+/* ── CAMPO ─────────────────────────────── */
+.campo-grupo {
+  margin-bottom: 28px;
+}
+
+.campo-label {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.campo-label .obrig { color: var(--accent); margin-left: 3px; }
+
+input[type=text],
+textarea,
+select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input::placeholder, textarea::placeholder { color: var(--text-dim); }
+
+input:focus, textarea:focus, select:focus {
+  border-bottom-color: var(--accent);
+}
+
+textarea {
+  resize: none;
+  min-height: 56px;
+  line-height: 1.7;
+  overflow: hidden;
+}
+
+select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235a5550' stroke-width='1.2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 2px center;
+  padding-right: 20px;
+}
+
+select option { background: #111; color: var(--text); }
+
+/* ── OPÇÕES (botões tipo pill) ──────────── */
+.opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.opcao {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 1px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  user-select: none;
+}
+
+.opcao:hover { border-color: var(--text-dim); color: var(--text); }
+
+.opcao.sel {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── BLOCO DE ORIENTAÇÃO ────────────────── */
+.orientacao {
+  background: var(--surface);
+  border-left: 2px solid var(--accent);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 11.5px;
+  color: var(--text-mid);
+  line-height: 1.8;
+}
+
+.orientacao .ot {
+  display: block;
+  font-size: 8.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+  opacity: 0.8;
+}
+
+.orientacao ul {
+  margin-top: 8px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.orientacao ul li::before { content: "— "; color: var(--accent); }
+.orientacao ul li { margin-bottom: 4px; }
+
+/* ── BLOCO ATENÇÃO ─────────────────────── */
+.atencao {
+  background: rgba(192,57,43,0.07);
+  border-left: 2px solid var(--red);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-size: 11.5px;
+  color: #c08080;
+  line-height: 1.7;
+}
+
+.atencao .at {
+  display: block;
+  font-size: 8.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 5px;
+}
+
+/* ── EXEMPLO ───────────────────────────── */
+.exemplo {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.exemplo::before { content: "ex. "; color: var(--accent); font-style: normal; }
+
+/* ── CHECKLIST ─────────────────────────── */
+.checks { display: flex; flex-direction: column; gap: 8px; }
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.check-item:hover { border-color: var(--text-dim); }
+.check-item.on { border-color: rgba(74,124,89,0.5); background: var(--green-dim); }
+
+.cbox {
+  width: 16px; height: 16px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s;
+}
+
+.check-item.on .cbox { border-color: var(--green); background: var(--green); }
+.cbox svg { display: none; }
+.check-item.on .cbox svg { display: block; }
+
+.ctext { font-size: 12px; color: var(--text-mid); line-height: 1.6; }
+.check-item.on .ctext { color: var(--text); }
+
+.checks-score {
+  margin-top: 12px;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+.checks-score span { color: var(--accent); }
+
+/* ── SÍNTESE ───────────────────────────── */
+.sintese-wrap {
+  margin-top: 16px;
+}
+
+.sintese-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+.sintese-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 28px 32px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--text);
+  min-height: 100px;
+  font-style: italic;
+  font-weight: 300;
+  transition: opacity 0.3s;
+  position: relative;
+}
+
+.sintese-box.vazio {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-style: normal;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+}
+
+.sintese-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0.4;
+}
+
+/* ── ACOES ─────────────────────────────── */
+.acoes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  padding: 11px 24px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 1px;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-acc {
+  background: var(--accent);
+  color: #0a0a0a;
+}
+.btn-acc:hover { opacity: 0.85; }
+
+.btn-out {
+  background: transparent;
+  color: var(--text-mid);
+  border: 1px solid var(--border);
+}
+.btn-out:hover { border-color: var(--text-mid); color: var(--text); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border: none;
+  font-size: 9px;
+  padding-left: 0;
+}
+.btn-ghost:hover { color: var(--text-mid); }
+
+/* ── DIVISOR ───────────────────────────── */
+.div { border: none; border-top: 1px solid var(--border-soft); margin: 56px 0; }
+
+/* ── ANIMAÇÕES ─────────────────────────── */
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.secao:nth-child(1) { animation-delay: 0.05s; }
+.secao:nth-child(2) { animation-delay: 0.12s; }
+.secao:nth-child(3) { animation-delay: 0.19s; }
+.secao:nth-child(4) { animation-delay: 0.26s; }
+.secao:nth-child(5) { animation-delay: 0.33s; }
+
+/* ── PRINT ─────────────────────────────── */
+@media print {
+  .topo, .acoes { display: none !important; }
+  body { background: white; color: black; }
+  .sintese-box { background: #f5f5f5; color: black; border: 1px solid #ccc; }
+  .orientacao { background: #f9f9f9; color: #333; }
+  .pagina { padding-top: 32px; }
+}
+
+@media (max-width: 560px) {
+  .pagina { padding: 80px 20px 80px; }
+  .topo { padding: 0 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPO -->
+<nav class="topo">
+  <div class="logo">Zêlu <span>Academy</span></div>
+  <div class="prog-topo">
+    <div class="prog-dots">
+      <div class="dot ativo" id="d1"></div>
+      <div class="dot" id="d2"></div>
+      <div class="dot" id="d3"></div>
+      <div class="dot" id="d4"></div>
+      <div class="dot" id="d5"></div>
+    </div>
+    <span id="prog-label">etapa 1 de 5</span>
+  </div>
+</nav>
+
+<div class="pagina">
+
+  <!-- INTRO -->
+  <div class="intro">
+    <div class="tag">Metodologia · Pesquisa Acadêmica</div>
+    <h1>Defina seu<br><em>problema</em> de pesquisa</h1>
+    <p>A maioria dos estudantes trava aqui. Este guia vai do zero — com exemplos concretos em cada passo — até você ter uma pergunta de pesquisa clara, viável e pronta para o orientador.</p>
+  </div>
+
+  <!-- ══ ETAPA 1 ════════════════════════════════════ -->
+  <div class="secao">
+    <div class="secao-head">
+      <span class="secao-num">01</span>
+      <span class="secao-titulo">Quem é você e o que quer estudar</span>
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Modalidade de pesquisa <span class="obrig">*</span></label>
+      <div class="opcoes" id="op-modal">
+        <button class="opcao" onclick="selecionarOpcao(this,'modal')">TCC</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'modal')">Iniciação Científica</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'modal')">Mestrado</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'modal')">Doutorado</button>
+      </div>
+      <input type="hidden" id="modal" oninput="atualizar()">
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Grande área do seu curso</label>
+      <div class="opcoes" id="op-grande-area">
+        <button class="opcao" onclick="selecionarOpcao(this,'grande-area')">Humanas</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'grande-area')">Sociais Aplicadas</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'grande-area')">Exatas</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'grande-area')">Biológicas / Saúde</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'grande-area')">Engenharias</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'grande-area')">Artes / Linguagens</button>
+      </div>
+      <input type="hidden" id="grande-area" oninput="atualizar()">
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Curso e instituição</label>
+      <input type="text" id="curso" placeholder="ex. Licenciatura em História — UEFS" oninput="atualizar()">
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Palavras-chave do seu interesse (até 5)</label>
+      <input type="text" id="keywords" placeholder="ex. escravidão, Bahia, século XIX, religião, resistência" oninput="atualizar()">
+      <div class="exemplo">Escreva só as palavras que vêm à cabeça. Não precisa ser um texto.</div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- ══ ETAPA 2 ════════════════════════════════════ -->
+  <div class="secao">
+    <div class="secao-head">
+      <span class="secao-num">02</span>
+      <span class="secao-titulo">O tema — território da pesquisa</span>
+    </div>
+
+    <div class="orientacao">
+      <span class="ot">O que é um tema</span>
+      Tema é o assunto amplo. É o mapa, não o destino. "Escravidão no Brasil" é tema. "A resistência cotidiana dos escravizados em Salvador entre 1850 e 1888" já começa a ser problema. O tema precisa ter um recorte — temporal, geográfico ou conceitual — para virar pesquisa.
+      <ul>
+        <li>Bom tema: específico, delimitável, ligado à sua área</li>
+        <li>Tema ruim: "a educação no Brasil" (enorme demais), "a vida" (impossível)</li>
+      </ul>
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Escreva seu tema em 1 a 3 frases</label>
+      <textarea id="tema" placeholder="Não precisa ser bonito. Pode ser tosco agora. Escreva." oninput="autoResize(this); atualizar()"></textarea>
+      <div class="exemplo">A relação entre práticas religiosas africanas e resistência à escravidão em Salvador durante o século XIX.</div>
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Recorte temporal</label>
+      <input type="text" id="recorte-tempo" placeholder="ex. 1850–1888, século XX, período colonial…" oninput="atualizar()">
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Recorte geográfico ou institucional</label>
+      <input type="text" id="recorte-geo" placeholder="ex. Salvador (BA), zona rural nordestina, escola pública…" oninput="atualizar()">
+    </div>
+
+    <div class="atencao">
+      <span class="at">Atenção — erro comum</span>
+      Estudantes costumam confundir tema com título de livro. "Imperialismo" é título de livro. Seu tema deve dizer <em>o quê</em>, <em>onde</em> e <em>quando</em> você quer investigar.
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- ══ ETAPA 3 ════════════════════════════════════ -->
+  <div class="secao">
+    <div class="secao-head">
+      <span class="secao-num">03</span>
+      <span class="secao-titulo">A lacuna — por que sua pesquisa precisa existir</span>
+    </div>
+
+    <div class="orientacao">
+      <span class="ot">O que é uma lacuna</span>
+      Lacuna é o buraco no conhecimento que a sua pesquisa vai tentar preencher. Não precisa ser inédita no mundo inteiro — basta ser relevante no seu contexto. Uma questão amplamente estudada no Rio de Janeiro pode ser completamente ignorada no interior da Bahia.
+      <ul>
+        <li>Como encontrar: leia 3 artigos recentes do tema e veja o que os autores dizem que "ainda precisa ser estudado"</li>
+        <li>Outro caminho: olhe para o seu contexto local — o que acontece aqui que a literatura geral não contempla?</li>
+        <li>Se não sabe ainda, escreva sua intuição — ela é um ponto de partida válido</li>
+      </ul>
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">O que a literatura já sabe sobre o seu tema?</label>
+      <textarea id="literatura" placeholder="Resuma em poucas frases. Se ainda não leu, escreva o que imagina que já existe." oninput="autoResize(this); atualizar()"></textarea>
+      <div class="exemplo">Existe vasta produção sobre o Quilombo dos Palmares e sobre a Revolta dos Malês, mas pouco sobre as formas cotidianas de resistência religiosa fora desses episódios.</div>
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Qual é a lacuna — o que ainda não foi respondido?</label>
+      <textarea id="lacuna" placeholder="Pode começar com: 'Não se sabe ao certo…', 'Pouco se estudou…', 'Nenhum trabalho examinou…'" oninput="autoResize(this); atualizar()"></textarea>
+      <div class="exemplo">Pouco se estudou sobre como as irmandades religiosas negras em Salvador funcionaram como espaço de articulação política nas décadas anteriores à abolição.</div>
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Por que isso importa? Qual a relevância?</label>
+      <textarea id="relevancia" placeholder="Para quem essa resposta faz diferença? Por que agora?" oninput="autoResize(this); atualizar()"></textarea>
+      <div class="exemplo">Compreender essas redes ajuda a reescrever a história da abolição a partir de dentro — dos próprios sujeitos escravizados — em vez de focar apenas nos abolicionistas brancos.</div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- ══ ETAPA 4 ════════════════════════════════════ -->
+  <div class="secao">
+    <div class="secao-head">
+      <span class="secao-num">04</span>
+      <span class="secao-titulo">A pergunta de pesquisa</span>
+    </div>
+
+    <div class="orientacao">
+      <span class="ot">Como construir uma boa pergunta</span>
+      A pergunta é o coração da pesquisa. Ela precisa ser específica (não "como funciona X?" mas "como X se manifestou em Y entre Z e W?"), pesquisável (você consegue buscar fontes para responder), e delimitada (não tenta resolver tudo de uma vez). Evite perguntas que se respondem com sim ou não.
+      <ul>
+        <li><strong style="color:var(--text)">Ruim:</strong> "O que é escravidão?" — é definição, não pesquisa</li>
+        <li><strong style="color:var(--text)">Ruim:</strong> "Por que a escravidão existiu?" — ampla demais</li>
+        <li><strong style="color:var(--text)">Boa:</strong> "Como as irmandades negras de Salvador articularam resistência política entre 1871 e 1888?"</li>
+      </ul>
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Sua pergunta de pesquisa <span class="obrig">*</span></label>
+      <textarea id="pergunta" placeholder="Escreva em forma de pergunta direta. Pode ser provisória — o orientador vai ajudar a afinar." oninput="autoResize(this); atualizar()"></textarea>
+    </div>
+
+    <div class="orientacao" style="margin-top:8px;">
+      <span class="ot">Estrutura útil para formular</span>
+      <em style="color:var(--text)">"Como [processo/fenômeno] se manifestou/operou/transformou em [lugar/grupo/contexto] durante [período]?"</em><br><br>
+      Ou então: <em style="color:var(--text)">"Qual foi o papel de [agente/fator] em [evento/processo] no contexto de [recorte]?"</em>
+    </div>
+
+    <div class="campo-grupo" style="margin-top:24px;">
+      <label class="campo-label">Hipótese inicial (pode estar errada — tudo bem)</label>
+      <textarea id="hipotese" placeholder="O que você acha que vai descobrir? Uma aposta inicial ajuda a organizar a pesquisa." oninput="autoResize(this); atualizar()"></textarea>
+      <div class="exemplo">Minha hipótese é que as irmandades funcionavam como redes de proteção jurídica e financeira, não apenas religiosa, e que isso foi central para a organização pré-abolicionista negra.</div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- ══ ETAPA 5 ════════════════════════════════════ -->
+  <div class="secao">
+    <div class="secao-head">
+      <span class="secao-num">05</span>
+      <span class="secao-titulo">Viabilidade e checklist</span>
+    </div>
+
+    <div class="orientacao">
+      <span class="ot">Por que isso importa</span>
+      Uma pesquisa brilhante sobre um arquivo que você não consegue acessar não vai a lugar nenhum. Viabilidade não é detalhe — é parte do problema de pesquisa. Se algo não for viável agora, o caminho é ajustar o recorte, não abandonar o tema.
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Que fontes ou materiais você pretende usar?</label>
+      <textarea id="fontes" placeholder="ex. acervo do APEB, artigos em revistas científicas, entrevistas, dados do IBGE, documentos digitalizados…" oninput="autoResize(this); atualizar()"></textarea>
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Você tem acesso a essas fontes?</label>
+      <div class="opcoes" id="op-acesso">
+        <button class="opcao" onclick="selecionarOpcao(this,'acesso')">Sim, tenho acesso</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'acesso')">Em parte</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'acesso')">Ainda não sei</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'acesso')">Não — preciso ajustar</button>
+      </div>
+      <input type="hidden" id="acesso" oninput="atualizar()">
+    </div>
+
+    <div class="campo-grupo">
+      <label class="campo-label">Método de pesquisa previsto</label>
+      <div class="opcoes" id="op-metodo">
+        <button class="opcao" onclick="selecionarOpcao(this,'metodo')">Revisão bibliográfica</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'metodo')">Pesquisa documental</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'metodo')">Pesquisa de campo</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'metodo')">Entrevistas</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'metodo')">Análise de dados</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'metodo')">Estudo de caso</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'metodo')">Experimental</button>
+        <button class="opcao" onclick="selecionarOpcao(this,'metodo')">Ainda não sei</button>
+      </div>
+      <input type="hidden" id="metodo" oninput="atualizar()">
+    </div>
+
+    <hr class="div" style="margin: 32px 0;">
+
+    <div class="campo-grupo">
+      <label class="campo-label" style="margin-bottom:16px;">Checklist — marque o que você pode afirmar com confiança</label>
+      <div class="checks" id="checklist">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="cbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <span class="ctext">Minha pergunta está formulada como questão clara e direta, não como título ou tema.</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="cbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <span class="ctext">O tema tem recorte temporal e/ou geográfico definido — não é vago demais.</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="cbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <span class="ctext">Identifiquei uma lacuna — algo que ainda não foi respondido ou que merece nova análise.</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="cbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <span class="ctext">Tenho acesso (ou caminho para obter acesso) às fontes ou dados necessários.</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="cbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <span class="ctext">A pesquisa é realizável dentro do prazo disponível para a modalidade escolhida.</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="cbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <span class="ctext">O problema tem relevância — importa para o campo ou para algum contexto específico.</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="cbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <span class="ctext">Consigo explicar meu problema em duas frases para alguém fora da academia.</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="cbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <span class="ctext">Minha pergunta não se responde com sim/não — ela exige investigação e análise.</span>
+        </div>
+      </div>
+      <div class="checks-score"><span id="check-n">0</span> / 8 critérios confirmados</div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- ══ SÍNTESE ════════════════════════════════════ -->
+  <div class="secao">
+    <div class="secao-head">
+      <span class="secao-num">✦</span>
+      <span class="secao-titulo">Síntese do problema</span>
+    </div>
+
+    <p style="font-size:11.5px; color:var(--text-mid); margin-bottom:20px; line-height:1.8;">
+      Gerada automaticamente a partir do que você preencheu. Use para apresentar ao orientador, copiar para o projeto ou imprimir.
+    </p>
+
+    <div class="sintese-wrap">
+      <div class="sintese-label">Problema de pesquisa — versão síntese</div>
+      <div id="sintese" class="sintese-box vazio">Preencha as etapas acima para gerar a síntese.</div>
+    </div>
+
+    <div class="acoes">
+      <button class="btn btn-acc" onclick="window.print()">Imprimir / Salvar PDF</button>
+      <button class="btn btn-out" onclick="copiar()">Copiar síntese</button>
+      <button class="btn btn-ghost" onclick="limpar()">Limpar tudo</button>
+    </div>
+  </div>
+
+</div><!-- /pagina -->
+
+<script>
+const estado = {};
+
+function selecionarOpcao(btn, campo) {
+  const grupo = btn.parentElement;
+  grupo.querySelectorAll('.opcao').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById(campo).value = btn.textContent;
+  estado[campo] = btn.textContent;
+  atualizar();
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+function g(id) {
+  return (document.getElementById(id)?.value || '').trim();
+}
+
+function atualizar() {
+  atualizarDots();
+  atualizarSintese();
+}
+
+function atualizarDots() {
+  const etapas = [
+    () => g('modal') || g('curso') || g('keywords'),
+    () => g('tema') || g('recorte-tempo'),
+    () => g('lacuna') || g('literatura'),
+    () => g('pergunta'),
+    () => g('fontes') || g('acesso')
+  ];
+  let atual = 0;
+  etapas.forEach((fn, i) => {
+    const d = document.getElementById('d' + (i+1));
+    if (fn()) {
+      d.classList.remove('ativo');
+      d.classList.add('feito');
+      atual = i + 1;
+    } else {
+      d.classList.remove('feito', 'ativo');
+    }
+  });
+  const prox = Math.min(atual + 1, 5);
+  const dp = document.getElementById('d' + (prox));
+  if (dp && !dp.classList.contains('feito')) dp.classList.add('ativo');
+  document.getElementById('prog-label').textContent = `etapa ${Math.min(atual+1,5)} de 5`;
+}
+
+function atualizarSintese() {
+  const modal     = g('modal');
+  const curso     = g('curso');
+  const tema      = g('tema');
+  const recT      = g('recorte-tempo');
+  const recG      = g('recorte-geo');
+  const lacuna    = g('lacuna');
+  const pergunta  = g('pergunta');
+  const hipotese  = g('hipotese');
+  const relevancia= g('relevancia');
+  const metodo    = g('metodo');
+
+  const box = document.getElementById('sintese');
+
+  if (!tema && !pergunta && !lacuna) {
+    box.className = 'sintese-box vazio';
+    box.textContent = 'Preencha as etapas acima para gerar a síntese.';
+    return;
+  }
+
+  let p = '';
+
+  // Contexto
+  if (modal || curso) {
+    const m = modal ? modal.toLowerCase() : 'pesquisa';
+    const c = curso ? ` (${curso})` : '';
+    p += `Esta ${m}${c} insere-se`;
+  } else {
+    p += 'Esta pesquisa insere-se';
+  }
+
+  if (tema) {
+    const t = tema.replace(/\.$/, '').charAt(0).toLowerCase() + tema.replace(/\.$/, '').slice(1);
+    p += ` no estudo de ${t}`;
+    if (recT || recG) {
+      p += ', com recorte';
+      if (recT) p += ` temporal em ${recT}`;
+      if (recT && recG) p += ' e';
+      if (recG) p += ` espacial em ${recG}`;
+    }
+    p += '.';
+  } else {
+    p += '.';
+  }
+
+  // Lacuna
+  if (lacuna) {
+    const l = lacuna.replace(/\.$/, '').charAt(0).toLowerCase() + lacuna.replace(/\.$/, '').slice(1);
+    p += ` A lacuna que motiva a investigação reside no fato de que ${l}.`;
+  }
+
+  // Relevância
+  if (relevancia) {
+    const r = relevancia.replace(/\.$/, '').charAt(0).toLowerCase() + relevancia.replace(/\.$/, '').slice(1);
+    p += ` Sua relevância está em que ${r}.`;
+  }
+
+  // Pergunta
+  if (pergunta) {
+    const q = pergunta.trim().replace(/\?$/, '');
+    p += ` A questão central que orienta o trabalho é: ${q}?`;
+  }
+
+  // Hipótese
+  if (hipotese) {
+    const h = hipotese.replace(/\.$/, '').charAt(0).toLowerCase() + hipotese.replace(/\.$/, '').slice(1);
+    p += ` A hipótese de trabalho sugere que ${h}.`;
+  }
+
+  // Método
+  if (metodo && metodo !== 'Ainda não sei') {
+    p += ` O percurso metodológico previsto inclui ${metodo.toLowerCase()}.`;
+  }
+
+  box.className = 'sintese-box';
+  box.textContent = p;
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('on');
+  const n = document.querySelectorAll('.check-item.on').length;
+  document.getElementById('check-n').textContent = n;
+}
+
+function copiar() {
+  const txt = document.getElementById('sintese').textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copiado';
+    setTimeout(() => btn.textContent = orig, 1800);
+  });
+}
+
+function limpar() {
+  if (!confirm('Apagar tudo?')) return;
+  ['curso','keywords','tema','recorte-tempo','recorte-geo','literatura',
+   'lacuna','relevancia','pergunta','hipotese','fontes',
+   'modal','grande-area','acesso','metodo'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.querySelectorAll('.opcao.sel').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.check-item.on').forEach(c => c.classList.remove('on'));
+  document.getElementById('check-n').textContent = '0';
+  atualizar();
+}
+
+// auto-resize nos textareas ao carregar
+document.querySelectorAll('textarea').forEach(t => {
+  t.addEventListener('input', () => autoResize(t));
+});
+
+atualizar();
+</script>
+</body>
+</html>
